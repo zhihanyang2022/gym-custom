@@ -27,11 +27,10 @@ Location-signal version of Heaven Hell
   the first eleven slots are for location and the last three slots are for signal.
   
 Catches:
-- Added attribute self.ready to make sure that the user always reset the environment before using.
-- Added attribute self.terminated to make sure that the user always reset the environment per episode.
+- Added attribute self.ready to make sure that the user always reset the environment before using / after episode termination.
 """
 
-class HeavenHellOneHotEnv(gym.Env):
+class HeavenHellOneHotLSEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
@@ -39,18 +38,15 @@ class HeavenHellOneHotEnv(gym.Env):
         self.discount = self.env.discount
 
         self.location_size = 10
-        self.signal_size = 3
-        self.memory_size = 1
+        self.signal_size = 1
+        self.memory_size = 10
 
         self.action_space = self.env.action_space  # for external use
-        self.observation_space = spaces.Box(low=0.0, high=4.0, shape=((self.location_size + self.signal_size) * self.memory_size,),
+        self.observation_space = spaces.Box(low=0.0, high=1.0, shape=((self.location_size + self.signal_size) * self.memory_size,),
                                             dtype=np.float32)  # for external use
 
         self.ready = False  # need to be reset before using at all
         self.info = {'episode' : None}  # for external use
-
-    def set_memory(self, size:int) -> None:
-        self.memory_size = size
 
     def push_to_memory(self, obs):
         self.memory.append(obs)
@@ -76,8 +72,8 @@ class HeavenHellOneHotEnv(gym.Env):
         return np.array(self.memory).flatten()
 
     def _generate_obs(self, state:int) -> list:
-        return self._one_hot(_get_location(state), self.location_size) + \
-               self._one_hot(self._get_signal(state), self.signal_size)
+        return self._one_hot(self._get_location(state), self.location_size) + \
+               self._get_signal(state)
 
     def _get_location(self, state:int) -> int:
         if state >= 10:
@@ -86,11 +82,11 @@ class HeavenHellOneHotEnv(gym.Env):
 
     def _get_signal(self, state:int) -> int:
         if state == 9:
-            return 0  # heaven on the left
+            return [1]  # heaven on the left
         elif state == 19:
-            return 1  # heaven on the right
+            return [-1]  # heaven on the right
         else:
-            return 2  # no information on the location of heaven
+            return [0]
 
     def _one_hot(self, target_index:int, size:int) -> list:
         temp = [0] * size
