@@ -113,13 +113,16 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
                 reward = 1.0       
 
         direction = 0.0
-        if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
-            if (self.heaven_position > self.hell_position):
-                # Heaven on the right
-                direction = 1.0
-            else:
-                # Heaven on the left
-                direction = -1.0
+        if self.seen_priest is False:
+            if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
+                if (self.heaven_position > self.hell_position):
+                    # Heaven on the right
+                    direction = 1.0
+                    self.seen_priest = True
+                else:
+                    # Heaven on the left
+                    direction = -1.0
+                    self.seen_priest = True
 
         self.state = np.array([position, velocity, direction])
         #self.state = np.array([direction, direction])
@@ -145,6 +148,8 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
 
         if self.viewer is not None:
             self.draw_flags(scale)
+
+        self.seen_priest = False
 
         return np.array([0.0])
 
