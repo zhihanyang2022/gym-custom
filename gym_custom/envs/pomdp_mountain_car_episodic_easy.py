@@ -121,13 +121,13 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
                 # Heaven on the left
                 direction = -1.0
 
-        #self.state = np.array([position, velocity, direction])
-        self.state = np.array([direction, direction])
+        self.state = np.array([position, velocity, direction])
+        #self.state = np.array([direction, direction])
 
-        return self.state, reward, False, {}
+        return np.array([direction]), reward, False, {}
 
     def reset(self):
-        self.state = np.array([0.0, 0.0])
+        self.state = np.array([0.0, 0.0, 0.0])
 
         # Randomize the heaven/hell location
         if (self.np_random.randint(2) == 0):
@@ -146,7 +146,7 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
         if self.viewer is not None:
             self.draw_flags(scale)
 
-        return np.array(self.state)
+        return np.array([0.0])
 
     def _height(self, xs):
         return .55 * np.ones_like(xs)
