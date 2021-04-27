@@ -10,7 +10,7 @@ register(
     entry_point='gym_custom.envs:ContinuousMountainCarPomdpEpisodicEnv'
 )
 
-register(
-    id='heaven-hell-onehot-ls-v0',
-    entry_point='gym_custom.envs:HeavenHellOneHotLSEnv',
-)
+# register(
+#     id='heaven-hell-onehot-ls-v0',
+#     entry_point='gym_custom.envs:HeavenHellOneHotLSEnv',
+# )

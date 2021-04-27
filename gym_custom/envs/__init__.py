@@ -1,3 +1,3 @@
 from gym_custom.envs.pomdp_mountain_car import ContinuousMountainCarPomdpEnv
 from gym_custom.envs.pomdp_mountain_car_episodic import ContinuousMountainCarPomdpEpisodicEnv
-from gym_custom.envs.heaven_hell_onehot_ls import HeavenHellOneHotLSEnv
+# from gym_custom.envs.heaven_hell_onehot_ls import HeavenHellOneHotLSEnv
