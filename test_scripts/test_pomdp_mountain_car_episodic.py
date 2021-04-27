@@ -18,5 +18,5 @@ for i in range(100):
         next_state, reward, done, _ = env.step(action)
         print(next_state[-1], reward)
         episode_length += 1
-        env.render()
+        # env.render()
     print(episode_length)
