@@ -13,8 +13,8 @@ for i in range(100):
     episode_length = 0
     while not done:
         action = env.action_space.sample()
-        next_state, reward, done, _ = env.step([-5])
-        # next_state, reward, done, _ = env.step(action)
+        # next_state, reward, done, _ = env.step([-15])
+        next_state, reward, done, _ = env.step(action)
         episode_length += 1
         env.render()
     print(episode_length)

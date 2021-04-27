@@ -21,10 +21,10 @@ import numpy as np
 import gym
 from gym import spaces
 from gym.utils import seeding
-
 from gym.envs.classic_control import rendering
 
-class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
+
+class ContinuousMountainCarPomdpEasyEnv(gym.Env):
 
     metadata = {
         'render.modes': ['human', 'rgb_array'],
@@ -32,14 +32,14 @@ class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
     }
 
     def __init__(self):
-        self.min_action = -10.0
-        self.max_action = 10.0
+        self.min_action = -15.0
+        self.max_action = 15.0
         self.min_position = -1.2
         self.max_position = 1.2
-        self.max_speed = 0.2
+        self.max_speed = 0.5
         self.heaven_position = 1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
         self.hell_position = -1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
-        self.priest_position = 0.5
+        self.priest_position = 0
         self.power = 0.0015
 
         # When the cart is within this vicinity, it observes the direction given
@@ -93,10 +93,9 @@ class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
         max_position = max(self.heaven_position, self.hell_position)
         min_position = min(self.heaven_position, self.hell_position)
 
-        # done = bool(
-        #     position >= max_position or position <= min_position
-        # )
-        done = False
+        done = bool(
+            position >= max_position or position <= min_position
+        )
 
         reward = 0.0
         if (self.heaven_position > self.hell_position):
@@ -111,22 +110,7 @@ class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
                 reward = -1.0
 
             if (position <= self.heaven_position):
-                reward = 1.0
-
-        # reward = -1.0
-        # if (self.heaven_position > self.hell_position):
-        #     if (position >= self.heaven_position):
-        #         reward = 0.0
-        #
-        #     if (position <= self.hell_position):
-        #         reward = -1.0
-        #
-        # if (self.heaven_position < self.hell_position):
-        #     if (position >= self.hell_position):
-        #         reward = -1.0
-        #
-        #     if (position <= self.heaven_position):
-        #         reward = 0.0
+                reward = 1.0       
 
         direction = 0.0
         if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
@@ -176,7 +160,7 @@ class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
         carheight = 20
 
         if self.viewer is None:
-
+            
             self.viewer = rendering.Viewer(screen_width, screen_height)
             xs = np.linspace(self.min_position, self.max_position, 100)
             ys = self._height(xs)
