@@ -24,7 +24,7 @@ from gym.utils import seeding
 from gym.envs.classic_control import rendering
 
 
-class ContinuousMountainCarPomdpEasyEnv(gym.Env):
+class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
 
     metadata = {
         'render.modes': ['human', 'rgb_array'],

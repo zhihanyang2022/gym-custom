@@ -6,8 +6,8 @@ register(
 )
 
 register(
-    id='pomdp-mountain-car-easy-v0',
-    entry_point='gym_custom.envs:ContinuousMountainCarPomdpEasyEnv'
+    id='pomdp-mountain-car-episodic-easy-v0',
+    entry_point='gym_custom.envs:ContinuousMountainCarPomdpEpisodicEasyEnv'
 )
 
 register(
