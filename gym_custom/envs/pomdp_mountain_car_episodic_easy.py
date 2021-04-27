@@ -122,7 +122,7 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
                 direction = -1.0
 
         #self.state = np.array([position, velocity, direction])
-        self.state = np.array([direction])
+        self.state = np.array([direction, direction])
 
         return self.state, reward, False, {}
 
