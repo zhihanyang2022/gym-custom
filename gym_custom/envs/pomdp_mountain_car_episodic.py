@@ -98,10 +98,25 @@ class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
         # )
         done = False
 
-        reward = 0.0
+        # reward = 0.0
+        # if (self.heaven_position > self.hell_position):
+        #     if (position >= self.heaven_position):
+        #         reward = 1.0
+        #
+        #     if (position <= self.hell_position):
+        #         reward = -1.0
+        #
+        # if (self.heaven_position < self.hell_position):
+        #     if (position >= self.hell_position):
+        #         reward = -1.0
+        #
+        #     if (position <= self.heaven_position):
+        #         reward = 1.0
+
+        reward = -1.0
         if (self.heaven_position > self.hell_position):
             if (position >= self.heaven_position):
-                reward = 1.0
+                reward = 0.0
 
             if (position <= self.hell_position):
                 reward = -1.0
@@ -111,9 +126,9 @@ class ContinuousMountainCarPomdpEpisodicEnv(gym.Env):
                 reward = -1.0
 
             if (position <= self.heaven_position):
-                reward = 1.0       
+                reward = 0.0
 
-        direction = 0.0
+    direction = 0.0
         if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
             if (self.heaven_position > self.hell_position):
                 # Heaven on the right
