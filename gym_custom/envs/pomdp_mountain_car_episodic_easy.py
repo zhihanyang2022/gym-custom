@@ -123,7 +123,7 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
 
         self.state = np.array([position, velocity, direction])
 
-        return self.state, reward, done, {}
+        return self.state, reward, False, {}
 
     def reset(self):
         self.state = np.array([self.np_random.uniform(low=-0.2, high=0.2), 0, 0.0])
