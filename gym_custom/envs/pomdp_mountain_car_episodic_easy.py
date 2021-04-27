@@ -44,7 +44,7 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
 
         # When the cart is within this vicinity, it observes the direction given
         # by the priest
-        self.priest_delta = 0.1
+        self.priest_delta = 0.2
 
         self.low_state = np.array(
             [self.min_position, -self.max_speed, -1.0], dtype=np.float32
