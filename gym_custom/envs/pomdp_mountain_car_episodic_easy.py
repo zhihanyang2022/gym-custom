@@ -127,7 +127,7 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
         return self.state, reward, False, {}
 
     def reset(self):
-        self.state = np.array([0, 0, 0.0])
+        self.state = np.array([0.0, 0.0])
 
         # Randomize the heaven/hell location
         if (self.np_random.randint(2) == 0):
