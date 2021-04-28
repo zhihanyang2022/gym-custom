@@ -24,7 +24,9 @@ from gym.utils import seeding
 # from gym.envs.classic_control import rendering
 
 
-class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
+class ContinuousMountainCarPomdpEasyEnv(gym.Env):
+
+    """Reset gives the direction but subsequent steps do not give directions, even near priest."""
 
     metadata = {
         'render.modes': ['human', 'rgb_array'],
@@ -32,19 +34,19 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
     }
 
     def __init__(self):
-        self.min_action = -15.0
-        self.max_action = 15.0
+        self.min_action = -5.0
+        self.max_action = 5.0
         self.min_position = -1.2
         self.max_position = 1.2
-        self.max_speed = 0.5
+        self.max_speed = 0.2
         self.heaven_position = 1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
         self.hell_position = -1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
-        self.priest_position = 0
+        self.priest_position = 0.5
         self.power = 0.0015
 
         # When the cart is within this vicinity, it observes the direction given
         # by the priest
-        self.priest_delta = 0.2
+        self.priest_delta = 0.1
 
         self.low_state = np.array(
             [self.min_position, -self.max_speed, -1.0], dtype=np.float32
@@ -93,29 +95,33 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
         max_position = max(self.heaven_position, self.hell_position)
         min_position = min(self.heaven_position, self.hell_position)
 
+        done = bool(
+            position >= max_position or position <= min_position
+        )
+
         reward = 0.0
         if (self.heaven_position > self.hell_position):
             if (position >= self.heaven_position):
-                reward = 1.0 / 7
+                reward = 1.0
 
             if (position <= self.hell_position):
-                reward = -1.0 / 7
+                reward = -1.0
 
         if (self.heaven_position < self.hell_position):
             if (position >= self.hell_position):
-                reward = -1.0 / 7
+                reward = -1.0
 
             if (position <= self.heaven_position):
-                reward = 1.0 / 7
+                reward = 1.0       
 
-        direction = 0.0  # only given during reset
+        direction = 0.0
 
         self.state = np.array([position, velocity, direction])
 
-        return np.array([direction]), reward, False, {}
+        return self.state, reward, done, {}
 
     def reset(self):
-        self.state = np.array([0.0, 0.0, 0.0])
+        self.state = np.array([self.np_random.uniform(low=-0.2, high=0.2), 0, 0.0])
 
         # Randomize the heaven/hell location
         if (self.np_random.randint(2) == 0):
@@ -140,8 +146,9 @@ class ContinuousMountainCarPomdpEpisodicEasyEnv(gym.Env):
         else:
             # Heaven on the left
             direction = -1.0
+        self.state[-1] = direction
 
-        return np.array([direction])
+        return np.array(self.state)
 
     def _height(self, xs):
         return .55 * np.ones_like(xs)
