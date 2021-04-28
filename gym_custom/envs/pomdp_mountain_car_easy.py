@@ -34,19 +34,19 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
     }
 
     def __init__(self):
-        self.min_action = -5.0
-        self.max_action = 5.0
+        self.min_action = -15.0
+        self.max_action = 15.0
         self.min_position = -1.2
         self.max_position = 1.2
-        self.max_speed = 0.2
+        self.max_speed = 0.5
         self.heaven_position = 1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
         self.hell_position = -1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
-        self.priest_position = 0.5
+        self.priest_position = 0 # doesn't matter
         self.power = 0.0015
 
         # When the cart is within this vicinity, it observes the direction given
         # by the priest
-        self.priest_delta = 0.1
+        self.priest_delta = 0.1 # doesn't matter
 
         self.low_state = np.array(
             [self.min_position, -self.max_speed, -1.0], dtype=np.float32
