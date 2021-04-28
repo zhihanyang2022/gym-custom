@@ -118,7 +118,7 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
 
         self.state = np.array([position, velocity, direction])
 
-        return self.state, reward, done, {}
+        return np.array([0]), reward, done, {}
 
     def reset(self):
         self.state = np.array([self.np_random.uniform(low=-0.2, high=0.2), 0, 0.0])
@@ -148,7 +148,7 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
             direction = -1.0
         self.state[-1] = direction
 
-        return np.array(self.state)
+        return np.array([direction])
 
     def _height(self, xs):
         return .55 * np.ones_like(xs)
