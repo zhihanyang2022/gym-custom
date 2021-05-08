@@ -7,3 +7,4 @@ from gym_custom.envs.pomdp_mountain_car_episodic import ContinuousMountainCarPom
 # from gym_custom.envs.heaven_hell_onehot_ls import HeavenHellOneHotLSEnv
 
 from gym_custom.envs.pomdp_mountain_car_opt_lower import ContinuousMountainCarPomdpOptLowerEnv
+from gym_custom.envs.continuous_heaven_hell_opt_lower import ContinuousHeavenHellOptLower

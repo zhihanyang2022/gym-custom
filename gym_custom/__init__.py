@@ -24,6 +24,11 @@ register(
     id='pomdp-mountain-car-opt-lower-v0',
     entry_point='gym_custom.envs:ContinuousMountainCarPomdpOptLowerEnv'
 )
+
+register(
+    id='continuous-heaven-hell-opt-lower-v0',
+    entry_point='gym_custom.envs:ContinuousHeavenHellOptLower'
+)
 # register(
 #     id='heaven-hell-onehot-ls-v0',
 #     entry_point='gym_custom.envs:HeavenHellOneHotLSEnv',

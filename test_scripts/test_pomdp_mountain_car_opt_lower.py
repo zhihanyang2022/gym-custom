@@ -16,6 +16,8 @@ for i in range(100):
         action = env.action_space.sample()
         # next_state, reward, done, _ = env.step([-15])
         next_state, reward, done, _ = env.step(action)
+        if done:
+            print('done')
         episode_length += 1
-        env.render()
+        #env.render()
     print(episode_length)

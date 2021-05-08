@@ -74,10 +74,28 @@ class ContinuousMountainCarPomdpOptLowerEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
+    def get_direction(self, position):
+        direction = 0.0
+        if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
+            if (self.heaven_position > self.hell_position):
+                # Heaven on the right
+                direction = 1.0
+            else:
+                # Heaven on the left
+                direction = -1.0
+        return direction
+
     def step(self, action: np.array):
 
+        prev_position = self.state
         position = action[0]
-        velocity = 0
+
+        self.state = position
+
+        positions_along_the_way = np.linspace(prev_position, position, 10)
+        directions = np.array([self.get_direction(pos) for pos in positions_along_the_way])
+
+        observation = np.vstack([positions_along_the_way, directions]).T.flatten()
 
         # Convert a possible numpy bool to a Python bool.
         max_position = max(self.heaven_position, self.hell_position)
@@ -102,21 +120,13 @@ class ContinuousMountainCarPomdpOptLowerEnv(gym.Env):
             if (position <= self.heaven_position):
                 reward = 1.0       
 
-        direction = 0.0
-        if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
-            if (self.heaven_position > self.hell_position):
-                # Heaven on the right
-                direction = 1.0
-            else:
-                # Heaven on the left
-                direction = -1.0
-
-        self.state = np.array([position, velocity, direction])
-
-        return self.state, reward, done, {}
+        return observation, reward, done, {}
 
     def reset(self):
-        self.state = np.array([self.np_random.uniform(low=-0.2, high=0.2), 0, 0.0])
+
+        self.state = self.np_random.uniform(low=-0.2, high=0.2)
+        observation = np.zeros((20, ))
+        observation[-2] = self.state  # -1 position is for position bit
 
         # Randomize the heaven/hell location
         if (self.np_random.randint(2) == 0):
@@ -135,7 +145,7 @@ class ContinuousMountainCarPomdpOptLowerEnv(gym.Env):
         if self.viewer is not None:
             self.draw_flags(scale)
 
-        return np.array(self.state)
+        return observation
 
     def _height(self, xs):
         return .55 * np.ones_like(xs)
