@@ -21,7 +21,7 @@ import numpy as np
 import gym
 from gym import spaces
 from gym.utils import seeding
-from gym.envs.classic_control import rendering
+# from gym.envs.classic_control import rendering
 
 
 class ContinuousMountainCarPomdpEasyEnv(gym.Env):
@@ -163,7 +163,8 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
         carheight = 20
 
         if self.viewer is None:
-            
+            from gym.envs.classic_control import rendering
+
             self.viewer = rendering.Viewer(screen_width, screen_height)
             xs = np.linspace(self.min_position, self.max_position, 100)
             ys = self._height(xs)
@@ -220,6 +221,7 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
 
     def draw_flags(self, scale):
         # Flag Heaven
+        from gym.envs.classic_control import rendering
         flagx = (abs(self.heaven_position)-self.min_position)*scale
         flagy1 = self._height(self.heaven_position)*scale
         flagy2 = flagy1 + 50
