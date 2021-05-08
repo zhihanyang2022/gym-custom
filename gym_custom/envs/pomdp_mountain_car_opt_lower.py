@@ -24,9 +24,7 @@ from gym.utils import seeding
 from gym.envs.classic_control import rendering
 
 
-class ContinuousMountainCarPomdpEasyEnv(gym.Env):
-
-    """Reset gives the direction but subsequent steps do not give directions, even near priest."""
+class ContinuousMountainCarPomdpOptLowerEnv(gym.Env):
 
     metadata = {
         'render.modes': ['human', 'rgb_array'],
@@ -34,19 +32,19 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
     }
 
     def __init__(self):
-        self.min_action = -15.0
-        self.max_action = 15.0
+        self.min_action = -5.0
+        self.max_action = 5.0
         self.min_position = -1.2
         self.max_position = 1.2
-        self.max_speed = 0.5
+        self.max_speed = 0.2
         self.heaven_position = 1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
         self.hell_position = -1.0 # was 0.5 in gym, 0.45 in Arnaud de Broissia's version
-        self.priest_position = 0 # doesn't matter
+        self.priest_position = 0.5
         self.power = 0.0015
 
         # When the cart is within this vicinity, it observes the direction given
         # by the priest
-        self.priest_delta = 0.1 # doesn't matter
+        self.priest_delta = 0.1
 
         self.low_state = np.array(
             [self.min_position, -self.max_speed, -1.0], dtype=np.float32
@@ -58,11 +56,12 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
         self.viewer = None
 
         self.action_space = spaces.Box(
-            low=self.min_action,
-            high=self.max_action,
+            low=self.min_position,
+            high=self.max_position,
             shape=(1,),
             dtype=np.float32
         )
+
         self.observation_space = spaces.Box(
             low=self.low_state,
             high=self.high_state,
@@ -76,20 +75,10 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action):
+    def step(self, action: np.array):
 
-        position = self.state[0]
-        velocity = self.state[1]
-        force = min(max(action[0], self.min_action), self.max_action)
-
-        # velocity += force * self.power - 0.0025 * math.cos(3 * position)
-        velocity += force * self.power
-        if (velocity > self.max_speed): velocity = self.max_speed
-        if (velocity < -self.max_speed): velocity = -self.max_speed
-        position += velocity
-        if (position > self.max_position): position = self.max_position
-        if (position < self.min_position): position = self.min_position
-        if (position == self.min_position and velocity < 0): velocity = 0
+        position = action[0]
+        velocity = 0
 
         # Convert a possible numpy bool to a Python bool.
         max_position = max(self.heaven_position, self.hell_position)
@@ -115,10 +104,17 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
                 reward = 1.0       
 
         direction = 0.0
+        if position >= self.priest_position - self.priest_delta and position <= self.priest_position + self.priest_delta:
+            if (self.heaven_position > self.hell_position):
+                # Heaven on the right
+                direction = 1.0
+            else:
+                # Heaven on the left
+                direction = -1.0
 
         self.state = np.array([position, velocity, direction])
 
-        return np.array([0]), reward, done, {}
+        return self.state, reward, done, {}
 
     def reset(self):
         self.state = np.array([self.np_random.uniform(low=-0.2, high=0.2), 0, 0.0])
@@ -140,15 +136,7 @@ class ContinuousMountainCarPomdpEasyEnv(gym.Env):
         if self.viewer is not None:
             self.draw_flags(scale)
 
-        if (self.heaven_position > self.hell_position):
-            # Heaven on the right
-            direction = 1.0
-        else:
-            # Heaven on the left
-            direction = -1.0
-        self.state[-1] = direction
-
-        return np.array([direction])
+        return np.array(self.state)
 
     def _height(self, xs):
         return .55 * np.ones_like(xs)

@@ -5,3 +5,5 @@ from gym_custom.envs.pomdp_mountain_car_easy import ContinuousMountainCarPomdpEa
 from gym_custom.envs.pomdp_mountain_car_episodic_easy import ContinuousMountainCarPomdpEpisodicEasyEnv
 from gym_custom.envs.pomdp_mountain_car_episodic import ContinuousMountainCarPomdpEpisodicEnv
 # from gym_custom.envs.heaven_hell_onehot_ls import HeavenHellOneHotLSEnv
+
+from gym_custom.envs.pomdp_mountain_car_opt_lower import ContinuousMountainCarPomdpOptLowerEnv
